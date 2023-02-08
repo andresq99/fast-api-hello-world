@@ -1,8 +1,10 @@
 #Python
 from typing import Optional
+from enum import Enum
 
 #Pydantic
 from pydantic import BaseModel
+from pydantic import Field
 
 #Se importa el modulo FastAPi de la libreria fastapi
 from fastapi import FastAPI
@@ -15,17 +17,36 @@ app = FastAPI()
 
 # Models
 
+class Haircolor(Enum):
+    white = "white"
+    brown = "brown"
+    black = "black"
+    blonde = "blonde"
+    red = "red"
+
 class Location(BaseModel):
     city: str
     state: str
     country: str
 
 class Person(BaseModel):
-    first_name : str
-    last_name : str
-    age: int
-    hair_color: Optional[str] = None # Valores opcionales
-    is_married: Optional[bool] = None # Valores opcionales
+    first_name : str = Field(
+        ...,
+        min_length=1,
+        max_length=50
+        )
+    last_name : str = Field(
+        ...,
+        min_length=1,
+        max_length=50
+        )
+    age: int = Field(
+        ...,
+        gt=0,
+        le=115
+    )
+    hair_color: Optional[Haircolor] = Field(default=None) # Valores opcionales
+    is_married: Optional[bool] = Field(default=None) # Valores opcionales
 
 
 #Se crea un path operation decorator usando la funcion get

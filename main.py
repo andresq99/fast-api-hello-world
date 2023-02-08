@@ -33,31 +33,34 @@ class Person(BaseModel):
     first_name : str = Field(
         ...,
         min_length=1,
-        max_length=50
+        max_length=50,
+        example = "Miguel"
         )
     last_name : str = Field(
         ...,
         min_length=1,
-        max_length=50
+        max_length=50,
+        example = "Estrada"
         )
     age: int = Field(
         ...,
         gt=0,
-        le=115
+        le=115,
+        example="25"
     )
-    hair_color: Optional[Haircolor] = Field(default=None) # Valores opcionales
-    is_married: Optional[bool] = Field(default=None) # Valores opcionales
+    hair_color: Optional[Haircolor] = Field(default=None, example="black") # Valores opcionales
+    is_married: Optional[bool] = Field(default=None, example=False) # Valores opcionales
 
-    class Config:
-        schema_extra = {
-            "example": {
-                "first_name": "Facundo",
-                "last_name": "Garcia Mantoni",
-                "age": 21,
-                "hair_color": "blonde",
-                "is_married": False
-            }
-        }
+    #class Config:
+    #    schema_extra = {
+    #        "example": {
+    #            "first_name": "Facundo",
+    #            "last_name": "Garcia Mantoni",
+    #            "age": 21,
+    #            "hair_color": "blonde",
+    #            "is_married": False
+    #        }
+    #    }
 
 #Se crea un path operation decorator usando la funcion get
 #En el home de la aplicacion se ejecutara nuestra funcion

@@ -48,6 +48,16 @@ class Person(BaseModel):
     hair_color: Optional[Haircolor] = Field(default=None) # Valores opcionales
     is_married: Optional[bool] = Field(default=None) # Valores opcionales
 
+    class Config:
+        schema_extra = {
+            "example": {
+                "first_name": "Facundo",
+                "last_name": "Garcia Mantoni",
+                "age": 21,
+                "hair_color": "blonde",
+                "is_married": False
+            }
+        }
 
 #Se crea un path operation decorator usando la funcion get
 #En el home de la aplicacion se ejecutara nuestra funcion
@@ -106,8 +116,9 @@ def update_person(
     ),
     # Path operation (Que nos envio 2 request body)
     person: Person = Body(...),
-    location: Location = Body(...)
+    #location: Location = Body(...)
 ):
-    results = person.dict()
-    results.update(location.dict()) #Unir diccionarios
-    return results
+    #results = person.dict()
+    #results.update(location.dict()) #Unir diccionarios
+    #return results
+    return person

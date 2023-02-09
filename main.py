@@ -5,6 +5,7 @@ from enum import Enum
 #Pydantic
 from pydantic import BaseModel
 from pydantic import Field
+from pydantic import EmailStr
 
 #Se importa el modulo FastAPi de la libreria fastapi
 from fastapi import FastAPI
@@ -12,6 +13,8 @@ from fastapi import Body
 from fastapi import Query
 from fastapi import Path
 from fastapi import Form # Viene de un formulario
+from fastapi import Header # Viene de un header
+from fastapi import Cookie # Viene de una cookie
 from fastapi import status # Acceder a los codigos de estado HTTP 
 
 #Se crea una instancia de la clase FastAPI
@@ -173,3 +176,31 @@ def update_person(
 )
 def login(username: str = Form(...), password: str = Form(...)):
     return LoginOut(username=username)
+
+# Cookies and Headers Parameters
+
+@app.post(
+    path = "/contact",
+    status_code=status.HTTP_200_OK
+)
+def contact(
+    first_name: str = Form(
+        ...,
+        max_length=20,
+        min_length=1
+    ),
+    last_name: str = Form(
+        ...,
+        max_length=20,
+        min_length=1
+    ),
+    email: EmailStr = Form(...),
+    message: str = Form(
+        ...,
+        min_length=20
+    ),
+    user_agent: Optional[str] = Header(default=None),
+    ads: Optional[str] = Cookie(default=None)
+):
+    return user_agent
+    pass

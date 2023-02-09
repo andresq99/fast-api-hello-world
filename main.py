@@ -50,7 +50,7 @@ class Person(BaseModel):
     )
     hair_color: Optional[Haircolor] = Field(default=None, example="black") # Valores opcionales
     is_married: Optional[bool] = Field(default=None, example=False) # Valores opcionales
-
+    password: str = Field(..., min_length=8)
     #class Config:
     #    schema_extra = {
     #        "example": {
@@ -62,6 +62,28 @@ class Person(BaseModel):
     #        }
     #    }
 
+class PersonOut(BaseModel):
+    first_name : str = Field(
+        ...,
+        min_length=1,
+        max_length=50,
+        example = "Miguel"
+        )
+    last_name : str = Field(
+        ...,
+        min_length=1,
+        max_length=50,
+        example = "Estrada"
+        )
+    age: int = Field(
+        ...,
+        gt=0,
+        le=115,
+        example="25"
+    )
+    hair_color: Optional[Haircolor] = Field(default=None, example="black") # Valores opcionales
+    is_married: Optional[bool] = Field(default=None, example=False) # Valores opcionales
+
 #Se crea un path operation decorator usando la funcion get
 #En el home de la aplicacion se ejecutara nuestra funcion
 
@@ -70,14 +92,16 @@ def home(): # Path operation function
     return {"message": "Hello World"}
 
 # Request and Responde Body
+# Parth Operations
 
-@app.post("/person/new") # Enviar datos desde el cliente al servidor
-def create_person(person: Person = Body(...)):
+#Devolver solo los datos de PersonOut
+@app.post("/person/new", response_model=PersonOut) # Enviar datos desde el cliente al servidor
+def create_person(person: Person = Body(...)): # Request Body
     return person
 
 #Validaciones query parameter
 
-@app.get("/person/detail")
+@app.get("/person/detail") # Decorador
 #Query parameters
 def show_person(
     name: Optional[str] = Query(

@@ -17,6 +17,7 @@ from fastapi import Header # Viene de un header
 from fastapi import Cookie # Viene de una cookie
 from fastapi import UploadFile # Viene de un archivo
 from fastapi import File # Viene de un archivo
+from fastapi import HTTPException # Manejo de excepciones
 from fastapi import status # Acceder a los codigos de estado HTTP 
 
 #Se crea una instancia de la clase FastAPI
@@ -128,6 +129,8 @@ def show_person(
 
 # Validaciones: Path parameters
 
+persons = [1,2,3,4,5]
+
 @app.get(
         path="/person/detail/{person_id}",
         status_code=status.HTTP_200_OK
@@ -140,8 +143,12 @@ def show_person(
                           title="Person Id",
                           description="Showing person id. Its required")
 ):
-    return {person_id: "It exists"}
-
+    if person_id not in persons:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="This person does not exist"
+        )
+    return {"person_id": "It exists"}
 
 # Validaciones: Request Body
 # Actualizar

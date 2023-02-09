@@ -11,6 +11,7 @@ from fastapi import FastAPI
 from fastapi import Body
 from fastapi import Query
 from fastapi import Path
+from fastapi import Form # Viene de un formulario
 from fastapi import status # Acceder a los codigos de estado HTTP 
 
 #Se crea una instancia de la clase FastAPI
@@ -67,6 +68,10 @@ class Person(PersonBase):
     #            "is_married": False
     #        }
     #    }
+
+class LoginOut(BaseModel):
+    username: str = Field(..., max_length=20, example="miguel2021")
+    message: str = Field(default="Login successfully")
 
 #Se crea un path operation decorator usando la funcion get
 #En el home de la aplicacion se ejecutara nuestra funcion
@@ -155,3 +160,16 @@ def update_person(
     #results.update(location.dict()) #Unir diccionarios
     #return results
     return person
+
+#Path operation
+#Formularios
+#Del backend al fronetnd
+
+#Logeando una cuenta
+@app.post(
+    path = "/login",
+    response_model= LoginOut,
+    status_code=status.HTTP_200_OK
+)
+def login(username: str = Form(...), password: str = Form(...)):
+    return LoginOut(username=username)

@@ -11,6 +11,7 @@ from fastapi import FastAPI
 from fastapi import Body
 from fastapi import Query
 from fastapi import Path
+from fastapi import status # Acceder a los codigos de estado HTTP 
 
 #Se crea una instancia de la clase FastAPI
 app = FastAPI()
@@ -70,21 +71,32 @@ class Person(PersonBase):
 #Se crea un path operation decorator usando la funcion get
 #En el home de la aplicacion se ejecutara nuestra funcion
 
-@app.get("/") #Path operation decorator: Permite que la operation function acceda a una path ejecutando la definicion de la funcion
+@app.get(
+        path="/",
+        status_code=status.HTTP_200_OK
+        ) #Path operation decorator: Permite que la operation function acceda a una path ejecutando la definicion de la funcion
 def home(): # Path operation function
     return {"message": "Hello World"}
-
+ 
 # Request and Responde Body
 # Parth Operations
 
 #Devolver solo los datos de PersonOut
-@app.post("/person/new", response_model=PersonOut) # Enviar datos desde el cliente al servidor
+#Endpoint para crear una persona
+@app.post(
+        path="/person/new",
+        response_model=PersonOut,
+        status_code=status.HTTP_201_CREATED
+        ) # Enviar datos desde el cliente al servidor
 def create_person(person: Person = Body(...)): # Request Body
     return person
 
 #Validaciones query parameter
-
-@app.get("/person/detail") # Decorador
+#Obteniendo un resultado
+@app.get(
+        path="/person/detail",
+        status_code=status.HTTP_200_OK
+        ) # Decorador
 #Query parameters
 def show_person(
     name: Optional[str] = Query(
@@ -106,7 +118,10 @@ def show_person(
 
 # Validaciones: Path parameters
 
-@app.get("/person/detail/{person_id}")
+@app.get(
+        path="/person/detail/{person_id}",
+        status_code=status.HTTP_200_OK
+        )
 #Path parameter
 def show_person(
     person_id: int = Path(..., 
@@ -117,9 +132,13 @@ def show_person(
 ):
     return {person_id: "It exists"}
 
+
 # Validaciones: Request Body
 # Actualizar
-@app.put("/person/{person_id}")
+@app.put(
+        "/person/{person_id}",
+        status_code=status.HTTP_202_ACCEPTED
+        )
 def update_person(
     person_id: int = Path(
         ...,

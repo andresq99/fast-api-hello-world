@@ -15,6 +15,8 @@ from fastapi import Path
 from fastapi import Form # Viene de un formulario
 from fastapi import Header # Viene de un header
 from fastapi import Cookie # Viene de una cookie
+from fastapi import UploadFile # Viene de un archivo
+from fastapi import File # Viene de un archivo
 from fastapi import status # Acceder a los codigos de estado HTTP 
 
 #Se crea una instancia de la clase FastAPI
@@ -203,4 +205,17 @@ def contact(
     ads: Optional[str] = Cookie(default=None)
 ):
     return user_agent
-    pass
+    
+# Files
+
+@app.post(
+    path = "/post-image"
+)
+def post_image(
+    image: UploadFile = File(...)
+):
+    return {
+        "Filename": image.filename,
+        "Format": image.content_type,
+        "Size(kb)": round(len(image.file.read())/1024,ndigits=2)
+    }

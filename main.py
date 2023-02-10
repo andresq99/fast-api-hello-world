@@ -79,6 +79,8 @@ class LoginOut(BaseModel):
     username: str = Field(..., max_length=20, example="miguel2021")
     message: str = Field(default="Login successfully")
 
+
+
 #Se crea un path operation decorator usando la funcion get
 #En el home de la aplicacion se ejecutara nuestra funcion
 
@@ -88,6 +90,16 @@ class LoginOut(BaseModel):
         tags = ["Home"]
         ) #Path operation decorator: Permite que la operation function acceda a una path ejecutando la definicion de la funcion
 def home(): # Path operation function
+    """
+    Home
+
+    This endpoint will return a dictionary with a message "Hello World"
+
+    Parameters:
+    - **None**
+
+    Returns a dictionary with a message "Hello World"
+    """
     return {"message": "Hello World"}
  
 # Request and Responde Body
@@ -99,9 +111,22 @@ def home(): # Path operation function
         path="/person/new",
         response_model=PersonOut,
         status_code=status.HTTP_201_CREATED,
-        tags = ["Persons"]
+        tags = ["Persons"],
+        summary="Create person in the app"
         ) # Enviar datos desde el cliente al servidor
 def create_person(person: Person = Body(...)): # Request Body
+    """
+    Create person
+
+    This path operation creates a person in the app and save the information in the database
+
+    Parameters:
+    - Request Body parameter
+        - **person: Person** -> A person model with first name, last name, age, hair color and is marital status
+
+    Returns a person model with first name, last name, age, hair color and is marital status
+        
+    """
     return person
 
 #Validaciones query parameter
@@ -128,6 +153,19 @@ def show_person(
         example=25
     )
 ):
+    """
+    Show person
+
+    This endpoint or path operation shows the person name and age in the app from the database
+
+    Parameters:
+    - Query parameters:
+        - **name: str(optional)** -> Name of the person. Its between 1 and 50 characters
+        - **age: str** -> Age of the person. It is required
+
+    Returns:
+    - A dictionary or JSON with the name and age of the person {name:age}
+    """
     return {name : age}
 
 # Validaciones: Path parameters
@@ -147,12 +185,25 @@ def show_person(
                           title="Person Id",
                           description="Showing person id. Its required")
 ):
+    """
+    Show person taken the id number
+
+    This endpoint or path operations show the person´s ID in the app from the database
+    
+    Parameters:
+    - Path parameters:
+        - **person_id: int** -> Id of the person. Its required and must be greater than 0
+    
+    Returns:
+    - A dictionary or JSON with the id of the person {person_id: id}
+    """
     if person_id not in persons:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="This person does not exist"
         )
     return {"person_id": "It exists"}
+
 
 # Validaciones: Request Body
 # Actualizar
@@ -173,6 +224,21 @@ def update_person(
     person: Person = Body(...),
     #location: Location = Body(...)
 ):
+    """
+    Update person
+
+    This endpoint or path operation updates the person in the app and save the information in the database
+    
+    Parameters:
+    - Path parameters:
+        - **person_id: int** -> Id of the person. Its required and must be greater than 0
+    
+    - Request Body parameters:
+        - **person: Person** -> A person model with first name, last name, age, hair color and is marital status
+
+    Returns:
+        Return a JSON that contains the person model with first name, last name, age, hair color and is marital status
+    """
     #results = person.dict()
     #results.update(location.dict()) #Unir diccionarios
     #return results
@@ -190,6 +256,19 @@ def update_person(
     tags = ["Persons"]
 )
 def login(username: str = Form(...), password: str = Form(...)):
+    """
+    Login
+
+    This endpoint or path operation logs in the user in the app and save the information in the database
+
+    Parameters:
+    - Form parameters:
+        - **username: str** -> Username of the person. Its required. This operation is contained in a form
+        - **password: str** -> Password of the person. Its required. This operation is contained in a form
+    
+    Returns:
+        Return a JSON that contains the username of the person
+    """
     return LoginOut(username=username)
 
 # Cookies and Headers Parameters
@@ -218,6 +297,25 @@ def contact(
     user_agent: Optional[str] = Header(default=None),
     ads: Optional[str] = Cookie(default=None)
 ):
+    """
+    Contact
+
+    This endpoint or path operation sends allows the user to contact the company
+
+    Parameters:
+    - Form parameters:
+        - **first_name: str** -> First name of the person. Its required. This operation is contained in a form
+        - **last_name: str** -> Last name of the person. Its required. This operation is contained in a form
+        - **email: EmailStr** -> Email of the person. Its required. This operation is contained in a form
+        - **message: str** -> Message of the person. Its required. This operation is contained in a form
+    - Header parameters:
+        - **user_agent: str** -> The browser that the user is using. Its optional
+    - Cookie parameters: 
+        - **ads: str** -> The cookies that the user is seeing. Its optional
+    
+    Returns:
+        Return a JSON that contains the user agent information
+    """
     return user_agent
     
 # Files
@@ -229,6 +327,19 @@ def contact(
 def post_image(
     image: UploadFile = File(...)
 ):
+    """
+    Upload Files
+
+    This endpoint or path operation allows the user to upload files
+    
+    Parameters:
+    - File parameters:
+        - **image: UploadFile** -> The file that the user is uploading. Its required
+
+    Returns:
+        Return a JSON that contains the filename, format and size of the file
+    """
+
     return {
         "Filename": image.filename,
         "Format": image.content_type,
